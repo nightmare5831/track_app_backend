@@ -12,9 +12,11 @@
   "license": "ISC",
   "description": "Simple backend for Track App integration",
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.3"
   },
   "devDependencies": {

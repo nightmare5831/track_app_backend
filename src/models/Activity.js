@@ -1,23 +1,25 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const activitySchema = new mongoose.Schema({
-  title: {
+  equipment: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Equipment',
+    required: true
+  },
+  activityType: {
     type: String,
     required: true
   },
-  type: {
-    type: String,
-    required: true,
-    enum: ['excavation', 'drilling', 'transportation', 'blasting', 'maintenance', 'other']
+  material: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Material'
   },
-  equipment: {
+  truckId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Equipment'
   },
-  location: {
-    latitude: { type: Number },
-    longitude: { type: Number },
-    address: { type: String }
+  details: {
+    type: String
   },
   startTime: {
     type: Date,
@@ -29,11 +31,8 @@ const activitySchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
-    enum: ['planned', 'in-progress', 'completed', 'cancelled'],
-    default: 'planned'
-  },
-  notes: {
-    type: String
+    enum: ['in-progress', 'completed'],
+    default: 'in-progress'
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
@@ -42,4 +41,4 @@ const activitySchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Activity', activitySchema);
+export default mongoose.model('Activity', activitySchema);

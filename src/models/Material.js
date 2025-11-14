@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const materialSchema = new mongoose.Schema({
   name: {
@@ -30,4 +30,4 @@ const materialSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Material', materialSchema);
+export default mongoose.model('Material', materialSchema);

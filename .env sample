@@ -1,9 +1,0 @@
-# Server Configuration
-PORT=8000
-NODE_ENV=development
-
-# API Configuration
-API_VERSION=1.0.0
-
-# Database Configuration
-MONGODB_URI=mongodb+srv://jastin_track_app:iamjastin5831@cluster0.qpliiwh.mongodb.net/?appName=Cluster0

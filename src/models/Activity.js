@@ -6,39 +6,43 @@ const activitySchema = new mongoose.Schema({
     ref: 'Equipment',
     required: true
   },
-  activityType: {
+  type: {
     type: String,
-    required: true
+    required: true,
+    enum: ['loading', 'unloading', 'digging', 'idle', 'maintenance']
   },
   material: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Material'
   },
-  truckId: {
+  truck: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Equipment'
   },
-  details: {
-    type: String
-  },
   startTime: {
     type: Date,
-    required: true
+    required: true,
+    default: Date.now
   },
-  endTime: {
-    type: Date
-  },
+  endTime: Date,
+  duration: Number,
   status: {
     type: String,
-    required: true,
-    enum: ['in-progress', 'completed'],
-    default: 'in-progress'
+    enum: ['active', 'completed'],
+    default: 'active'
   },
-  createdBy: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   }
 }, { timestamps: true });
+
+activitySchema.pre('save', function(next) {
+  if (this.endTime && this.startTime) {
+    this.duration = Math.floor((this.endTime - this.startTime) / 1000);
+  }
+  next();
+});
 
 export default mongoose.model('Activity', activitySchema);

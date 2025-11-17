@@ -2,17 +2,15 @@ import Activity from '../models/Activity.js';
 
 export const startActivity = async (req, res) => {
   try {
-    const { equipment, activityType, material, truckId, details } = req.body;
+    const { equipment, activityType, material, truckId } = req.body;
 
     const activity = new Activity({
       equipment,
-      activityType,
+      type: activityType,
       material,
-      truckId,
-      details,
-      startTime: new Date(),
-      status: 'in-progress',
-      createdBy: req.user.id
+      truck: truckId,
+      status: 'active',
+      user: req.user.id
     });
 
     await activity.save();
@@ -42,8 +40,8 @@ export const stopActivity = async (req, res) => {
 export const getCurrentActivity = async (req, res) => {
   try {
     const activity = await Activity.findOne({
-      createdBy: req.user.id,
-      status: 'in-progress'
+      user: req.user.id,
+      status: 'active'
     }).populate('equipment material');
 
     res.json({ success: true, data: activity });
@@ -54,7 +52,7 @@ export const getCurrentActivity = async (req, res) => {
 
 export const getActivities = async (req, res) => {
   try {
-    const activities = await Activity.find({ createdBy: req.user.id })
+    const activities = await Activity.find({ user: req.user.id })
       .populate('equipment material')
       .sort({ startTime: -1 });
 

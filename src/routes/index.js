@@ -3,7 +3,8 @@ import { healthCheck, getHello, postHello } from "../controllers/testController.
 import { register, login } from "../controllers/authController.js";
 import { getEquipment, getEquipmentById } from "../controllers/equipmentController.js";
 import { getMaterials } from "../controllers/materialController.js";
-import { startActivity, stopActivity, getCurrentActivity, getActivities } from "../controllers/activityController.js";
+import { getActivities, getActivitiesByType, createActivity } from "../controllers/activityController.js";
+import { startOperation, stopOperation, getCurrentOperation, getOperations, getOperationById } from "../controllers/operationController.js";
 import { auth } from "../middleware/auth.js";
 
 const routes = Router();
@@ -22,11 +23,17 @@ routes.get("/equipment/:id", auth, getEquipmentById);
 // Material endpoints
 routes.get("/materials", auth, getMaterials);
 
-// Activity endpoints
-routes.post("/activities/start", auth, startActivity);
-routes.post("/activities/:id/stop", auth, stopActivity);
-routes.get("/activities/current", auth, getCurrentActivity);
+// Activity endpoints (reference data)
 routes.get("/activities", auth, getActivities);
+routes.get("/activities/type/:activityType", auth, getActivitiesByType);
+routes.post("/activities", auth, createActivity);
+
+// Operation endpoints (operational logs)
+routes.post("/operations/start", auth, startOperation);
+routes.post("/operations/:id/stop", auth, stopOperation);
+routes.get("/operations/current", auth, getCurrentOperation);
+routes.get("/operations", auth, getOperations);
+routes.get("/operations/:id", auth, getOperationById);
 
 // Test endpoints for mobile app integration
 routes.get("/hello", getHello);

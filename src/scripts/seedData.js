@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import Equipment from '../models/Equipment.js';
 import Material from '../models/Material.js';
+import Activity from '../models/Activity.js';
 import { User } from '../models/User.js';
 import dotenv from 'dotenv';
 
@@ -26,7 +27,8 @@ const seedData = async () => {
     // Clear existing data
     await Equipment.deleteMany({});
     await Material.deleteMany({});
-    console.log('Cleared existing equipment and materials');
+    await Activity.deleteMany({});
+    console.log('Cleared existing equipment, materials, and activities');
 
     // Create Materials
     const materials = [
@@ -134,8 +136,39 @@ const seedData = async () => {
     ];
 
     // Insert equipment
-    const createdEquipment = await Equipment.insertMany([...excavators, ...trucks]);
+    await Equipment.insertMany([...excavators, ...trucks]);
     console.log(`Created ${excavators.length} excavators and ${trucks.length} trucks`);
+
+    // Create Activities (reference/lookup table)
+    const activities = [
+      // Common activities
+      { name: 'Lunch', activityType: 'lunch' },
+      { name: 'Dinner', activityType: 'dinner' },
+      { name: 'Refueling', activityType: 'refueling' },
+      { name: 'Checklist', activityType: 'checklist' },
+      { name: 'Transfer', activityType: 'transfer' },
+      { name: 'Maintenance', activityType: 'maintenance' },
+      { name: 'Service', activityType: 'service' },
+      { name: 'Training/DDS', activityType: 'training_dds' },
+      { name: 'Operating Other Machine', activityType: 'operating_other_machine' },
+      { name: 'Machine Change', activityType: 'machine_change' },
+      { name: 'Bench Relocation', activityType: 'bench_relocation' },
+      { name: 'Stopped', activityType: 'stopped' },
+      { name: 'Waiting', activityType: 'waiting' },
+
+      // Loading equipment activities
+      { name: 'Loading', activityType: 'loading' },
+      { name: 'Loading Truck', activityType: 'loading_truck' },
+
+      // Transport equipment activities
+      { name: 'Load', activityType: 'load' },
+      { name: 'Trip to Destination', activityType: 'trip_to_destination' },
+      { name: 'Unload', activityType: 'unload' },
+      { name: 'Return', activityType: 'return' }
+    ];
+
+    const createdActivities = await Activity.insertMany(activities);
+    console.log(`Created ${createdActivities.length} activities`);
 
     console.log('\n✅ Seed data created successfully!');
     console.log('\n=== Test User Credentials ===');
@@ -151,6 +184,11 @@ const seedData = async () => {
     console.log('  • Copper Ore');
     console.log('  • Iron Ore');
     console.log('  • Waste Rock');
+    console.log(`\n=== Activities Summary (Reference Data) ===`);
+    console.log(`- ${createdActivities.length} activity types added`);
+    console.log('  • 13 Common activities (lunch, dinner, stopped, waiting, etc.)');
+    console.log('  • 2 Loading equipment activities (loading, loading_truck)');
+    console.log('  • 4 Transport equipment activities (load, trip, unload, return)');
 
   } catch (error) {
     console.error('Error seeding data:', error);

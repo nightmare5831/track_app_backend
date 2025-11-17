@@ -17,9 +17,8 @@ const seedData = async () => {
     if (!user) {
       user = await User.create({
         email: 'test@example.com',
-        password: 'password123', // This should be hashed in real scenario
-        name: 'Test User',
-        role: 'operator'
+        password: 'password123',
+        name: 'Test User'
       });
       console.log('Created test user');
     }
@@ -29,130 +28,129 @@ const seedData = async () => {
     await Material.deleteMany({});
     console.log('Cleared existing equipment and materials');
 
-    // Create Excavators
-    const excavators = [
-      {
-        name: 'Excavator CAT 320',
-        type: 'excavator',
-        registrationNumber: 'EXC-001',
-        capacity: 1.2,
-        status: 'active',
-        owner: user._id
-      },
-      {
-        name: 'Excavator Komatsu PC200',
-        type: 'excavator',
-        registrationNumber: 'EXC-002',
-        capacity: 1.5,
-        status: 'active',
-        owner: user._id
-      },
-      {
-        name: 'Excavator Volvo EC210',
-        type: 'excavator',
-        registrationNumber: 'EXC-003',
-        capacity: 1.3,
-        status: 'active',
-        owner: user._id
-      }
-    ];
-
-    // Create Trucks
-    const trucks = [
-      {
-        name: 'Dump Truck CAT 770',
-        type: 'truck',
-        registrationNumber: 'TRK-001',
-        capacity: 50,
-        status: 'active',
-        owner: user._id
-      },
-      {
-        name: 'Dump Truck Volvo A40G',
-        type: 'truck',
-        registrationNumber: 'TRK-002',
-        capacity: 45,
-        status: 'active',
-        owner: user._id
-      },
-      {
-        name: 'Dump Truck Komatsu HD785',
-        type: 'truck',
-        registrationNumber: 'TRK-003',
-        capacity: 60,
-        status: 'active',
-        owner: user._id
-      },
-      {
-        name: 'Dump Truck CAT 775',
-        type: 'truck',
-        registrationNumber: 'TRK-004',
-        capacity: 55,
-        status: 'active',
-        owner: user._id
-      }
-    ];
-
     // Create Materials
     const materials = [
       {
+        name: 'Activated Bentonite',
+        type: 'processed',
+        properties: {
+          density: 1200,
+          customFields: []
+        }
+      },
+      {
+        name: 'Raw Bentonite',
+        type: 'mineral',
+        properties: {
+          density: 1100,
+          customFields: []
+        }
+      },
+      {
         name: 'Copper Ore',
-        category: 'other',
-        quantity: 1000,
-        unit: 'ton',
-        location: 'Mine Section A',
-        owner: user._id
+        type: 'ore',
+        properties: {
+          density: 1800,
+          gradePercentage: 2.5,
+          customFields: []
+        }
       },
       {
         name: 'Iron Ore',
-        category: 'other',
-        quantity: 1500,
-        unit: 'ton',
-        location: 'Mine Section B',
-        owner: user._id
-      },
-      {
-        name: 'Gold Ore',
-        category: 'other',
-        quantity: 500,
-        unit: 'ton',
-        location: 'Mine Section C',
-        owner: user._id
+        type: 'ore',
+        properties: {
+          density: 2500,
+          gradePercentage: 65,
+          customFields: []
+        }
       },
       {
         name: 'Waste Rock',
-        category: 'other',
-        quantity: 2000,
-        unit: 'ton',
-        location: 'Dump Site',
-        owner: user._id
-      },
-      {
-        name: 'Diesel Fuel',
-        category: 'fuel',
-        quantity: 5000,
-        unit: 'liter',
-        location: 'Fuel Station',
-        owner: user._id
+        type: 'waste',
+        properties: {
+          density: 1600,
+          customFields: []
+        }
       }
     ];
 
-    // Insert all data
-    await Equipment.insertMany([...excavators, ...trucks]);
+    const createdMaterials = await Material.insertMany(materials);
+    console.log(`Created ${createdMaterials.length} materials`);
+
+    // Create Excavators (Loading Equipment)
+    const excavators = [
+      {
+        name: 'Excavator CAT 320',
+        category: 'loading',
+        capacity: 1.2,
+        status: 'active'
+      },
+      {
+        name: 'Excavator Komatsu PC200',
+        category: 'loading',
+        capacity: 1.5,
+        status: 'active'
+      },
+      {
+        name: 'Excavator Volvo EC210',
+        category: 'loading',
+        capacity: 1.3,
+        status: 'active'
+      }
+    ];
+
+    // Create Trucks (Transport Equipment)
+    const trucks = [
+      {
+        name: 'Dump Truck CAT 770',
+        category: 'transport',
+        capacity: 50,
+        status: 'active'
+      },
+      {
+        name: 'Dump Truck Volvo A40G',
+        category: 'transport',
+        capacity: 45,
+        status: 'active'
+      },
+      {
+        name: 'Dump Truck Komatsu HD785',
+        category: 'transport',
+        capacity: 60,
+        status: 'active'
+      },
+      {
+        name: 'Dump Truck CAT 775',
+        category: 'transport',
+        capacity: 55,
+        status: 'active'
+      },
+      {
+        name: 'Dump Truck Mercedes-Benz Actros',
+        category: 'transport',
+        capacity: 40,
+        status: 'active'
+      }
+    ];
+
+    // Insert equipment
+    const createdEquipment = await Equipment.insertMany([...excavators, ...trucks]);
     console.log(`Created ${excavators.length} excavators and ${trucks.length} trucks`);
 
-    await Material.insertMany(materials);
-    console.log(`Created ${materials.length} materials`);
-
     console.log('\n✅ Seed data created successfully!');
-    console.log('\nTest User Credentials:');
+    console.log('\n=== Test User Credentials ===');
     console.log('Email: test@example.com');
     console.log('Password: password123');
-    console.log('\nEquipment Summary:');
-    console.log(`- ${excavators.length} Excavators`);
-    console.log(`- ${trucks.length} Trucks`);
-    console.log(`\nMaterials Summary:`);
-    console.log(`- ${materials.length} materials added`);
+    console.log('\n=== Equipment Summary ===');
+    console.log(`- ${excavators.length} Excavators (Loading Equipment)`);
+    console.log(`- ${trucks.length} Trucks (Transport Equipment)`);
+    console.log(`\n=== Materials Summary ===`);
+    console.log(`- ${createdMaterials.length} materials added`);
+    console.log('  • Activated Bentonite');
+    console.log('  • Raw Bentonite');
+    console.log('  • Copper Ore');
+    console.log('  • Iron Ore');
+    console.log('  • Waste Rock');
 
   } catch (error) {
     console.error('Error seeding data:', error);

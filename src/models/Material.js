@@ -3,31 +3,32 @@ import mongoose from 'mongoose';
 const materialSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
-  category: {
+  type: {
     type: String,
-    required: true,
-    enum: ['fuel', 'explosives', 'tools', 'parts', 'consumables', 'other']
+    enum: ['ore', 'mineral', 'waste', 'processed', 'other'],
+    default: 'ore'
   },
-  quantity: {
-    type: Number,
-    required: true,
-    min: 0
+  properties: {
+    density: {
+      type: Number, 
+    },
+    volume: {
+      type: Number, 
+    },
+    gradePercentage: {
+      type: Number, 
+    },
+    moistureContent: {
+      type: Number, 
+    },
+    customFields: [{
+      name: String,
+      value: mongoose.Schema.Types.Mixed
+    }]
   },
-  unit: {
-    type: String,
-    required: true,
-    enum: ['kg', 'liter', 'piece', 'ton', 'meter']
-  },
-  location: {
-    type: String
-  },
-  owner: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  }
 }, { timestamps: true });
 
 export default mongoose.model('Material', materialSchema);

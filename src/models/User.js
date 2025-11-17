@@ -17,6 +17,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  role: {
+    type: String,
+    required: true,
+    enum: ['operator', 'administrator'],
+    default: 'operator',
+  },
+  team: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Team',
+  },
 }, {
   timestamps: true,
 });

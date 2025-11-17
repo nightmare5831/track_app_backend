@@ -6,43 +6,57 @@ const activitySchema = new mongoose.Schema({
     ref: 'Equipment',
     required: true
   },
-  type: {
-    type: String,
-    required: true,
-    enum: ['loading', 'unloading', 'digging', 'idle', 'maintenance']
+  operator: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   },
   material: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Material'
   },
-  truck: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Equipment'
+  activityType: {
+    type: String,
+    required: true,
+    enum: [
+      'lunch', 'dinner', 'refueling', 'checklist', 'transfer', 'maintenance',
+      'service', 'training_dds', 'operating_other_machine', 'machine_change',
+      'bench_relocation', 'stopped', 'waiting',
+      'loading', 'loading_truck',
+      'load', 'trip_to_destination', 'unload', 'return'
+    ]
+  },
+  activityDetails: {
+    stoppedReason: {
+      type: String,
+      enum: ['rain', 'no_truck_available', 'no_loader', 'lost_key', 'other']
+    },
+    waitingReason: {
+      type: String,
+      enum: ['access_issues', 'lack_of_trucks', 'other']
+    },
+    customDetails: {
+      type: String
+    }
+  },
+  miningFront: {
+    type: String
+  },
+  destination: {
+    type: String
+  },
+  distance: {
+    type: Number,
+    default: 0
   },
   startTime: {
     type: Date,
     required: true,
     default: Date.now
   },
-  endTime: Date,
-  duration: Number,
-  status: {
-    type: String,
-    enum: ['active', 'completed'],
-    default: 'active'
-  },
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+  endTime: {
+    type: Date
   }
 }, { timestamps: true });
-
-activitySchema.pre('save', function(next) {
-  if (this.endTime && this.startTime) {
-    this.duration = Math.floor((this.endTime - this.startTime) / 1000);
-  }
-  next();
-});
 
 export default mongoose.model('Activity', activitySchema);

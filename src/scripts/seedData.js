@@ -142,29 +142,181 @@ const seedData = async () => {
     // Create Activities (reference/lookup table)
     const activities = [
       // Common activities
-      { name: 'Lunch', activityType: 'lunch' },
-      { name: 'Dinner', activityType: 'dinner' },
-      { name: 'Refueling', activityType: 'refueling' },
-      { name: 'Checklist', activityType: 'checklist' },
-      { name: 'Transfer', activityType: 'transfer' },
-      { name: 'Maintenance', activityType: 'maintenance' },
-      { name: 'Service', activityType: 'service' },
-      { name: 'Training/DDS', activityType: 'training_dds' },
-      { name: 'Operating Other Machine', activityType: 'operating_other_machine' },
-      { name: 'Machine Change', activityType: 'machine_change' },
-      { name: 'Bench Relocation', activityType: 'bench_relocation' },
-      { name: 'Stopped', activityType: 'stopped' },
-      { name: 'Waiting', activityType: 'waiting' },
+      {
+        name: 'Lunch',
+        activityType: 'lunch',
+        activityDetails: {
+          stopped_reason: [],
+          waiting_reason: [],
+          custom_reason: []
+        }
+      },
+      {
+        name: 'Dinner',
+        activityType: 'dinner',
+        activityDetails: {
+          stopped_reason: [],
+          waiting_reason: [],
+          custom_reason: []
+        }
+      },
+      {
+        name: 'Refueling',
+        activityType: 'refueling',
+        activityDetails: {
+          stopped_reason: [],
+          waiting_reason: [],
+          custom_reason: []
+        }
+      },
+      {
+        name: 'Checklist',
+        activityType: 'checklist',
+        activityDetails: {
+          stopped_reason: [],
+          waiting_reason: [],
+          custom_reason: []
+        }
+      },
+      {
+        name: 'Transfer',
+        activityType: 'transfer',
+        activityDetails: {
+          stopped_reason: [],
+          waiting_reason: [],
+          custom_reason: []
+        }
+      },
+      {
+        name: 'Maintenance',
+        activityType: 'maintenance',
+        activityDetails: {
+          stopped_reason: [],
+          waiting_reason: [],
+          custom_reason: []
+        }
+      },
+      {
+        name: 'Service',
+        activityType: 'service',
+        activityDetails: {
+          stopped_reason: [],
+          waiting_reason: [],
+          custom_reason: []
+        }
+      },
+      {
+        name: 'Training/DDS',
+        activityType: 'training_dds',
+        activityDetails: {
+          stopped_reason: [],
+          waiting_reason: [],
+          custom_reason: []
+        }
+      },
+      {
+        name: 'Operating Other Machine',
+        activityType: 'operating_other_machine',
+        activityDetails: {
+          stopped_reason: [],
+          waiting_reason: [],
+          custom_reason: []
+        }
+      },
+      {
+        name: 'Machine Change',
+        activityType: 'machine_change',
+        activityDetails: {
+          stopped_reason: [],
+          waiting_reason: [],
+          custom_reason: []
+        }
+      },
+      {
+        name: 'Bench Relocation',
+        activityType: 'bench_relocation',
+        activityDetails: {
+          stopped_reason: [],
+          waiting_reason: [],
+          custom_reason: []
+        }
+      },
+      {
+        name: 'Stopped',
+        activityType: 'stopped',
+        activityDetails: {
+          stopped_reason: ['Rain', 'No truck available', 'No loader', 'Lost key', 'Equipment breakdown', 'Fuel shortage', 'Operator unavailable', 'Safety issue', 'Weather conditions', 'End of shift'],
+          waiting_reason: [],
+          custom_reason: []
+        }
+      },
+      {
+        name: 'Waiting',
+        activityType: 'waiting',
+        activityDetails: {
+          stopped_reason: [],
+          waiting_reason: ['Access issues', 'Lack of trucks', 'Waiting for instructions', 'Waiting for equipment', 'Road maintenance', 'Traffic congestion', 'Loading delay', 'Authorization pending'],
+          custom_reason: []
+        }
+      },
 
       // Loading equipment activities
-      { name: 'Loading', activityType: 'loading' },
-      { name: 'Loading Truck', activityType: 'loading_truck' },
+      {
+        name: 'Loading',
+        activityType: 'loading',
+        activityDetails: {
+          stopped_reason: [],
+          waiting_reason: [],
+          custom_reason: []
+        }
+      },
+      {
+        name: 'Loading Truck',
+        activityType: 'loading_truck',
+        activityDetails: {
+          stopped_reason: [],
+          waiting_reason: [],
+          custom_reason: []
+        }
+      },
 
       // Transport equipment activities
-      { name: 'Load', activityType: 'load' },
-      { name: 'Trip to Destination', activityType: 'trip_to_destination' },
-      { name: 'Unload', activityType: 'unload' },
-      { name: 'Return', activityType: 'return' }
+      {
+        name: 'Load',
+        activityType: 'load',
+        activityDetails: {
+          stopped_reason: [],
+          waiting_reason: [],
+          custom_reason: []
+        }
+      },
+      {
+        name: 'Trip to Destination',
+        activityType: 'trip_to_destination',
+        activityDetails: {
+          stopped_reason: [],
+          waiting_reason: [],
+          custom_reason: []
+        }
+      },
+      {
+        name: 'Unload',
+        activityType: 'unload',
+        activityDetails: {
+          stopped_reason: [],
+          waiting_reason: [],
+          custom_reason: []
+        }
+      },
+      {
+        name: 'Return',
+        activityType: 'return',
+        activityDetails: {
+          stopped_reason: [],
+          waiting_reason: [],
+          custom_reason: []
+        }
+      }
     ];
 
     const createdActivities = await Activity.insertMany(activities);

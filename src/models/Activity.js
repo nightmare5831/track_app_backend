@@ -16,6 +16,42 @@ const activitySchema = new mongoose.Schema({
       'loading', 'loading_truck',
       'load', 'trip_to_destination', 'unload', 'return'
     ]
+  },
+  activityDetails: {
+    stopped_reason: {
+      type: [String],
+      enum: [
+        'Rain',
+        'No truck available',
+        'No loader',
+        'Lost key',
+        'Equipment breakdown',
+        'Fuel shortage',
+        'Operator unavailable',
+        'Safety issue',
+        'Weather conditions',
+        'End of shift'
+      ],
+      default: []
+    },
+    waiting_reason: {
+      type: [String],
+      enum: [
+        'Access issues',
+        'Lack of trucks',
+        'Waiting for instructions',
+        'Waiting for equipment',
+        'Road maintenance',
+        'Traffic congestion',
+        'Loading delay',
+        'Authorization pending'
+      ],
+      default: []
+    },
+    custom_reason: {
+      type: [String],
+      default: []
+    }
   }
 }, { timestamps: true });
 

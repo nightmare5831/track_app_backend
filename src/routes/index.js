@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { healthCheck, getHello, postHello } from "../controllers/testController.js";
 import { register, login } from "../controllers/authController.js";
+import { getUsers, getUserById } from "../controllers/userController.js";
 import { getEquipment, getEquipmentById } from "../controllers/equipmentController.js";
 import { getMaterials } from "../controllers/materialController.js";
 import { getActivities, getActivitiesByType, createActivity, updateActivity, addCustomReason, getActivityDetailsOptions } from "../controllers/activityController.js";
@@ -15,6 +16,10 @@ routes.get("/", healthCheck);
 // Auth endpoints
 routes.post("/auth/register", register);
 routes.post("/auth/login", login);
+
+// User endpoints
+routes.get("/users", auth, getUsers);
+routes.get("/users/:id", auth, getUserById);
 
 // Equipment endpoints
 routes.get("/equipment", auth, getEquipment);

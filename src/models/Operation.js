@@ -20,6 +20,10 @@ const operationSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Material'
   },
+  truckBeingLoaded: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Equipment'
+  },
   miningFront: {
     type: String
   },

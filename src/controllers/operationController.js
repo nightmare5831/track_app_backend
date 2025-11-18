@@ -3,23 +3,25 @@ import Operation from '../models/Operation.js';
 // Start new operation
 export const startOperation = async (req, res) => {
   try {
-    const { equipment, activity, material, miningFront, destination, activityDetails } = req.body;
+    const { equipment, operator, activity, activityDetails, material, truckBeingLoaded, miningFront, destination } = req.body;
 
+    // Build operation object in order matching the model
     const operation = new Operation({
       equipment,
-      operator: req.user.id,
+      operator: operator || req.user.id, // Use provided operator or fallback to authenticated user
       activity,
+      activityDetails,
       material,
+      truckBeingLoaded,
       miningFront,
       destination,
-      activityDetails,
       startTime: new Date()
     });
 
     await operation.save();
 
     // Populate references before returning
-    await operation.populate('equipment operator activity material');
+    await operation.populate('equipment operator activity material truckBeingLoaded');
 
     res.json({ success: true, data: operation });
   } catch (error) {
@@ -48,7 +50,7 @@ export const stopOperation = async (req, res) => {
     }
 
     await operation.save();
-    await operation.populate('equipment operator activity material');
+    await operation.populate('equipment operator activity material truckBeingLoaded');
 
     res.json({ success: true, data: operation });
   } catch (error) {
@@ -63,7 +65,7 @@ export const getCurrentOperation = async (req, res) => {
       operator: req.user.id,
       endTime: null
     })
-      .populate('equipment operator activity material')
+      .populate('equipment operator activity material truckBeingLoaded')
       .sort({ startTime: -1 });
 
     res.json({ success: true, data: operation });
@@ -89,7 +91,7 @@ export const getOperations = async (req, res) => {
     if (activity) filter.activity = activity;
 
     const operations = await Operation.find(filter)
-      .populate('equipment operator activity material')
+      .populate('equipment operator activity material truckBeingLoaded')
       .sort({ startTime: -1 });
 
     res.json({ success: true, data: operations });
@@ -102,7 +104,7 @@ export const getOperations = async (req, res) => {
 export const getOperationById = async (req, res) => {
   try {
     const operation = await Operation.findById(req.params.id)
-      .populate('equipment operator activity material');
+      .populate('equipment operator activity material truckBeingLoaded');
 
     if (!operation) {
       return res.status(404).json({ success: false, message: 'Operation not found' });

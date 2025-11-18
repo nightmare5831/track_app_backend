@@ -191,7 +191,7 @@ const seedData = async () => {
         name: 'Maintenance',
         activityType: 'maintenance',
         activityDetails: {
-          stopped_reason: [],
+          stopped_reason: ['Maintenance'],
           waiting_reason: [],
           custom_reason: []
         }
@@ -200,7 +200,7 @@ const seedData = async () => {
         name: 'Service',
         activityType: 'service',
         activityDetails: {
-          stopped_reason: [],
+          stopped_reason: ['Maintenance'],
           waiting_reason: [],
           custom_reason: []
         }
@@ -245,7 +245,18 @@ const seedData = async () => {
         name: 'Stopped',
         activityType: 'stopped',
         activityDetails: {
-          stopped_reason: ['Rain', 'No truck available', 'No loader', 'Lost key', 'Equipment breakdown', 'Fuel shortage', 'Operator unavailable', 'Safety issue', 'Weather conditions', 'End of shift'],
+          stopped_reason: [
+            'Rain',
+            'No truck available',
+            'No loader',
+            'Equipment breakdown',
+            'Fuel shortage',
+            'Operator unavailable',
+            'Safety issue',
+            'End of shift',
+            'Maintenance',
+            'Road obstacle'
+          ],
           waiting_reason: [],
           custom_reason: []
         }
@@ -255,7 +266,16 @@ const seedData = async () => {
         activityType: 'waiting',
         activityDetails: {
           stopped_reason: [],
-          waiting_reason: ['Access issues', 'Lack of trucks', 'Waiting for instructions', 'Waiting for equipment', 'Road maintenance', 'Traffic congestion', 'Loading delay', 'Authorization pending'],
+          waiting_reason: [
+            'Access issues',
+            'Lack of trucks',
+            'Waiting for instructions',
+            'Waiting for equipment',
+            'Road maintenance',
+            'Loading delay',
+            'Queue at loading point',
+            'Queue at dump site'
+          ],
           custom_reason: []
         }
       },
@@ -286,7 +306,11 @@ const seedData = async () => {
         activityType: 'load',
         activityDetails: {
           stopped_reason: [],
-          waiting_reason: [],
+          waiting_reason: [
+            'Waiting for equipment',
+            'Queue at loading point',
+            'Loading delay'
+          ],
           custom_reason: []
         }
       },
@@ -294,7 +318,11 @@ const seedData = async () => {
         name: 'Trip to Destination',
         activityType: 'trip_to_destination',
         activityDetails: {
-          stopped_reason: [],
+          stopped_reason: [
+            'Road obstacle',
+            'Rain',
+            'Equipment breakdown'
+          ],
           waiting_reason: [],
           custom_reason: []
         }
@@ -304,7 +332,11 @@ const seedData = async () => {
         activityType: 'unload',
         activityDetails: {
           stopped_reason: [],
-          waiting_reason: [],
+          waiting_reason: [
+            'Queue at dump site',
+            'Waiting for instructions',
+            'Waiting for equipment'
+          ],
           custom_reason: []
         }
       },
@@ -312,7 +344,10 @@ const seedData = async () => {
         name: 'Return',
         activityType: 'return',
         activityDetails: {
-          stopped_reason: [],
+          stopped_reason: [
+            'Road obstacle',
+            'Rain'
+          ],
           waiting_reason: [],
           custom_reason: []
         }

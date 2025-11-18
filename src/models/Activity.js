@@ -24,13 +24,13 @@ const activitySchema = new mongoose.Schema({
         'Rain',
         'No truck available',
         'No loader',
-        'Lost key',
         'Equipment breakdown',
         'Fuel shortage',
         'Operator unavailable',
         'Safety issue',
-        'Weather conditions',
-        'End of shift'
+        'End of shift',
+        'Maintenance',
+        'Road obstacle'
       ],
       default: []
     },
@@ -42,9 +42,9 @@ const activitySchema = new mongoose.Schema({
         'Waiting for instructions',
         'Waiting for equipment',
         'Road maintenance',
-        'Traffic congestion',
         'Loading delay',
-        'Authorization pending'
+        'Queue at loading point',
+        'Queue at dump site'
       ],
       default: []
     },

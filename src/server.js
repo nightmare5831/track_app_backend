@@ -19,9 +19,14 @@ app.use(express.json());
 // Routes
 app.use("/api", routes);
 
-// Start server
-app.listen(config.PORT, () => {
-  console.log(`Server running on http://localhost:${config.PORT}`);
-  console.log(`API available at http://localhost:${config.PORT}/api`);
-  console.log(`Environment: ${config.NODE_ENV}`);
-});
+// Start server (only if not in Vercel serverless environment)
+if (process.env.VERCEL !== '1') {
+  app.listen(config.PORT, () => {
+    console.log(`Server running on http://localhost:${config.PORT}`);
+    console.log(`API available at http://localhost:${config.PORT}/api`);
+    console.log(`Environment: ${config.NODE_ENV}`);
+  });
+}
+
+// Export for Vercel serverless functions
+export default app;

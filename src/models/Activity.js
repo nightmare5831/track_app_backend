@@ -9,13 +9,7 @@ const activitySchema = new mongoose.Schema({
   activityType: {
     type: String,
     required: true,
-    enum: [
-      'lunch', 'dinner', 'refueling', 'checklist', 'transfer', 'maintenance',
-      'service', 'training_dds', 'operating_other_machine', 'machine_change',
-      'bench_relocation', 'stopped', 'waiting',
-      'loading', 'loading_truck',
-      'load', 'trip_to_destination', 'unload', 'return'
-    ]
+    enum: ['loading', 'transport', 'general']
   },
   activityDetails: {
     stopped_reason: {

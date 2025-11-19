@@ -141,46 +141,10 @@ const seedData = async () => {
 
     // Create Activities (reference/lookup table)
     const activities = [
-      // Common activities
+      // General activities (available for all equipment)
       {
         name: 'Lunch',
-        activityType: 'lunch',
-        activityDetails: {
-          stopped_reason: [],
-          waiting_reason: [],
-          custom_reason: []
-        }
-      },
-      {
-        name: 'Dinner',
-        activityType: 'dinner',
-        activityDetails: {
-          stopped_reason: [],
-          waiting_reason: [],
-          custom_reason: []
-        }
-      },
-      {
-        name: 'Refueling',
-        activityType: 'refueling',
-        activityDetails: {
-          stopped_reason: [],
-          waiting_reason: [],
-          custom_reason: []
-        }
-      },
-      {
-        name: 'Checklist',
-        activityType: 'checklist',
-        activityDetails: {
-          stopped_reason: [],
-          waiting_reason: [],
-          custom_reason: []
-        }
-      },
-      {
-        name: 'Transfer',
-        activityType: 'transfer',
+        activityType: 'general',
         activityDetails: {
           stopped_reason: [],
           waiting_reason: [],
@@ -189,61 +153,16 @@ const seedData = async () => {
       },
       {
         name: 'Maintenance',
-        activityType: 'maintenance',
+        activityType: 'general',
         activityDetails: {
           stopped_reason: ['Maintenance'],
-          waiting_reason: [],
-          custom_reason: []
-        }
-      },
-      {
-        name: 'Service',
-        activityType: 'service',
-        activityDetails: {
-          stopped_reason: ['Maintenance'],
-          waiting_reason: [],
-          custom_reason: []
-        }
-      },
-      {
-        name: 'Training/DDS',
-        activityType: 'training_dds',
-        activityDetails: {
-          stopped_reason: [],
-          waiting_reason: [],
-          custom_reason: []
-        }
-      },
-      {
-        name: 'Operating Other Machine',
-        activityType: 'operating_other_machine',
-        activityDetails: {
-          stopped_reason: [],
-          waiting_reason: [],
-          custom_reason: []
-        }
-      },
-      {
-        name: 'Machine Change',
-        activityType: 'machine_change',
-        activityDetails: {
-          stopped_reason: [],
-          waiting_reason: [],
-          custom_reason: []
-        }
-      },
-      {
-        name: 'Bench Relocation',
-        activityType: 'bench_relocation',
-        activityDetails: {
-          stopped_reason: [],
           waiting_reason: [],
           custom_reason: []
         }
       },
       {
         name: 'Stopped',
-        activityType: 'stopped',
+        activityType: 'general',
         activityDetails: {
           stopped_reason: [
             'Rain',
@@ -254,7 +173,6 @@ const seedData = async () => {
             'Operator unavailable',
             'Safety issue',
             'End of shift',
-            'Maintenance',
             'Road obstacle'
           ],
           waiting_reason: [],
@@ -263,7 +181,7 @@ const seedData = async () => {
       },
       {
         name: 'Waiting',
-        activityType: 'waiting',
+        activityType: 'general',
         activityDetails: {
           stopped_reason: [],
           waiting_reason: [
@@ -280,7 +198,7 @@ const seedData = async () => {
         }
       },
 
-      // Loading equipment activities
+      // Loading equipment specific activities
       {
         name: 'Loading',
         activityType: 'loading',
@@ -292,7 +210,7 @@ const seedData = async () => {
       },
       {
         name: 'Loading Truck',
-        activityType: 'loading_truck',
+        activityType: 'loading',
         activityDetails: {
           stopped_reason: [],
           waiting_reason: [],
@@ -300,10 +218,10 @@ const seedData = async () => {
         }
       },
 
-      // Transport equipment activities
+      // Transport equipment specific activities
       {
         name: 'Load',
-        activityType: 'load',
+        activityType: 'transport',
         activityDetails: {
           stopped_reason: [],
           waiting_reason: [
@@ -316,7 +234,7 @@ const seedData = async () => {
       },
       {
         name: 'Trip to Destination',
-        activityType: 'trip_to_destination',
+        activityType: 'transport',
         activityDetails: {
           stopped_reason: [
             'Road obstacle',
@@ -329,7 +247,7 @@ const seedData = async () => {
       },
       {
         name: 'Unload',
-        activityType: 'unload',
+        activityType: 'transport',
         activityDetails: {
           stopped_reason: [],
           waiting_reason: [
@@ -342,7 +260,7 @@ const seedData = async () => {
       },
       {
         name: 'Return',
-        activityType: 'return',
+        activityType: 'transport',
         activityDetails: {
           stopped_reason: [
             'Road obstacle',
@@ -355,27 +273,11 @@ const seedData = async () => {
     ];
 
     const createdActivities = await Activity.insertMany(activities);
-    console.log(`Created ${createdActivities.length} activities`);
-
+    
     console.log('\n✅ Seed data created successfully!');
-    console.log('\n=== Test User Credentials ===');
-    console.log('Email: test@example.com');
-    console.log('Password: password123');
-    console.log('\n=== Equipment Summary ===');
-    console.log(`- ${excavators.length} Excavators (Loading Equipment)`);
-    console.log(`- ${trucks.length} Trucks (Transport Equipment)`);
-    console.log(`\n=== Materials Summary ===`);
-    console.log(`- ${createdMaterials.length} materials added`);
-    console.log('  • Activated Bentonite');
-    console.log('  • Raw Bentonite');
-    console.log('  • Copper Ore');
-    console.log('  • Iron Ore');
-    console.log('  • Waste Rock');
-    console.log(`\n=== Activities Summary (Reference Data) ===`);
-    console.log(`- ${createdActivities.length} activity types added`);
-    console.log('  • 13 Common activities (lunch, dinner, stopped, waiting, etc.)');
-    console.log('  • 2 Loading equipment activities (loading, loading_truck)');
-    console.log('  • 4 Transport equipment activities (load, trip, unload, return)');
+    console.log('  • 4 General activities (Lunch, Maintenance, Stopped, Waiting)');
+    console.log('  • 2 Loading activities (Loading, Loading Truck)');
+    console.log('  • 4 Transport activities (Load, Trip to Destination, Unload, Return)');
 
   } catch (error) {
     console.error('Error seeding data:', error);

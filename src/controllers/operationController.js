@@ -39,13 +39,8 @@ export const stopOperation = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Operation not found' });
     }
 
-    // Check if operation belongs to the user
-    if (operation.operator.toString() !== req.user.id) {
-      return res.status(403).json({ success: false, message: 'Unauthorized' });
-    }
-
     operation.endTime = new Date();
-    if (distance) {
+    if (distance !== undefined) {
       operation.distance = distance;
     }
 

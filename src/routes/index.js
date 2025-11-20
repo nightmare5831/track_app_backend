@@ -5,8 +5,9 @@ import { getUsers, getUserById } from "../controllers/userController.js";
 import { getEquipment, getEquipmentById } from "../controllers/equipmentController.js";
 import { getMaterials } from "../controllers/materialController.js";
 import { getActivities, getActivitiesByType, createActivity, updateActivity, addCustomReason, getActivityDetailsOptions } from "../controllers/activityController.js";
-import { startOperation, stopOperation, getCurrentOperation, getOperations, getOperationById } from "../controllers/operationController.js";
-import { auth } from "../middleware/auth.js";
+import { startOperation, stopOperation, getCurrentOperation, getOperations, getOperationById, updateOperation } from "../controllers/operationController.js";
+import { getAllActiveOperations, getAllOperations, getInactivityAlerts, getDashboardStats, getOperatorsStatus } from "../controllers/adminController.js";
+import { auth, adminAuth } from "../middleware/auth.js";
 
 const routes = Router();
 
@@ -39,9 +40,17 @@ routes.post("/activities/:id/custom-reason", auth, addCustomReason);
 // Operation endpoints (operational logs)
 routes.post("/operations/start", auth, startOperation);
 routes.post("/operations/:id/stop", auth, stopOperation);
+routes.put("/operations/:id", auth, updateOperation);
 routes.get("/operations/current", auth, getCurrentOperation);
 routes.get("/operations", auth, getOperations);
 routes.get("/operations/:id", auth, getOperationById);
+
+// Admin endpoints (require administrator role)
+routes.get("/admin/dashboard", adminAuth, getDashboardStats);
+routes.get("/admin/operations", adminAuth, getAllOperations);
+routes.get("/admin/operations/active", adminAuth, getAllActiveOperations);
+routes.get("/admin/alerts/inactivity", adminAuth, getInactivityAlerts);
+routes.get("/admin/operators/status", adminAuth, getOperatorsStatus);
 
 // Test endpoints for mobile app integration
 routes.get("/hello", getHello);

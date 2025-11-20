@@ -3,12 +3,22 @@ import Operation from '../models/Operation.js';
 // Start new operation
 export const startOperation = async (req, res) => {
   try {
-    const { equipment, operator, activity, activityDetails, material, truckBeingLoaded, miningFront, destination } = req.body;
+    const { equipment, activity, activityDetails, material, truckBeingLoaded, miningFront, destination } = req.body;
 
-    // Build operation object in order matching the model
+    // Check if user already has an active operation
+    const existingOperation = await Operation.findOne({
+      operator: req.user.id,
+      endTime: null
+    });
+
+    if (existingOperation) {
+      return res.status(400).json({ success: false, message: 'You already have an active operation. Please stop it first.' });
+    }
+
+    // Build operation object - always use authenticated user as operator
     const operation = new Operation({
       equipment,
-      operator: operator || req.user.id, // Use provided operator or fallback to authenticated user
+      operator: req.user.id, // Always use authenticated user
       activity,
       activityDetails,
       material,
@@ -37,6 +47,11 @@ export const stopOperation = async (req, res) => {
 
     if (!operation) {
       return res.status(404).json({ success: false, message: 'Operation not found' });
+    }
+
+    // Security: Ensure user can only stop their own operations
+    if (operation.operator.toString() !== req.user.id) {
+      return res.status(403).json({ success: false, message: 'Unauthorized to stop this operation' });
     }
 
     operation.endTime = new Date();
@@ -104,6 +119,44 @@ export const getOperationById = async (req, res) => {
     if (!operation) {
       return res.status(404).json({ success: false, message: 'Operation not found' });
     }
+
+    // Security: Ensure user can only view their own operations
+    if (operation.operator._id.toString() !== req.user.id) {
+      return res.status(403).json({ success: false, message: 'Unauthorized to view this operation' });
+    }
+
+    res.json({ success: true, data: operation });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Update operation
+export const updateOperation = async (req, res) => {
+  try {
+    const { activity, activityDetails, material, truckBeingLoaded, miningFront, destination, distance } = req.body;
+    const operation = await Operation.findById(req.params.id);
+
+    if (!operation) {
+      return res.status(404).json({ success: false, message: 'Operation not found' });
+    }
+
+    // Security: Ensure user can only update their own operations
+    if (operation.operator.toString() !== req.user.id) {
+      return res.status(403).json({ success: false, message: 'Unauthorized to update this operation' });
+    }
+
+    // Update fields if provided
+    if (activity) operation.activity = activity;
+    if (activityDetails !== undefined) operation.activityDetails = activityDetails;
+    if (material !== undefined) operation.material = material;
+    if (truckBeingLoaded !== undefined) operation.truckBeingLoaded = truckBeingLoaded;
+    if (miningFront !== undefined) operation.miningFront = miningFront;
+    if (destination !== undefined) operation.destination = destination;
+    if (distance !== undefined) operation.distance = distance;
+
+    await operation.save();
+    await operation.populate('equipment operator activity material truckBeingLoaded');
 
     res.json({ success: true, data: operation });
   } catch (error) {

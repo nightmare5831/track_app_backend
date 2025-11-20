@@ -13,15 +13,39 @@ const seedData = async () => {
     await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/trackapp');
     console.log('Connected to MongoDB');
 
-    // Find or create a test user
-    let user = await User.findOne({ email: 'test@example.com' });
-    if (!user) {
-      user = await User.create({
-        email: 'test@example.com',
-        password: 'password123',
-        name: 'Test User'
+    // Find or create admin user
+    let adminUser = await User.findOne({ email: 'admin@example.com' });
+    if (!adminUser) {
+      adminUser = await User.create({
+        email: 'admin@example.com',
+        password: 'admin123',
+        name: 'Admin User',
+        role: 'administrator'
       });
-      console.log('Created test user');
+      console.log('Created admin user');
+    }
+
+    // Find or create test operator users
+    let operator1 = await User.findOne({ email: 'operator1@example.com' });
+    if (!operator1) {
+      operator1 = await User.create({
+        email: 'operator1@example.com',
+        password: 'password123',
+        name: 'John Operator',
+        role: 'operator'
+      });
+      console.log('Created operator user 1');
+    }
+
+    let operator2 = await User.findOne({ email: 'operator2@example.com' });
+    if (!operator2) {
+      operator2 = await User.create({
+        email: 'operator2@example.com',
+        password: 'password123',
+        name: 'Jane Operator',
+        role: 'operator'
+      });
+      console.log('Created operator user 2');
     }
 
     // Clear existing data
@@ -275,6 +299,11 @@ const seedData = async () => {
     const createdActivities = await Activity.insertMany(activities);
     
     console.log('\n✅ Seed data created successfully!');
+    console.log('Users:');
+    console.log('  • Admin: admin@example.com / admin123');
+    console.log('  • Operator 1: operator1@example.com / password123');
+    console.log('  • Operator 2: operator2@example.com / password123');
+    console.log('\nActivities:');
     console.log('  • 4 General activities (Lunch, Maintenance, Stopped, Waiting)');
     console.log('  • 2 Loading activities (Loading, Loading Truck)');
     console.log('  • 4 Transport activities (Load, Trip to Destination, Unload, Return)');

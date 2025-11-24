@@ -13,7 +13,7 @@ const seedData = async () => {
     await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/trackapp');
     console.log('Connected to MongoDB');
 
-    // Find or create admin user
+    // Create or update admin user
     let adminUser = await User.findOne({ email: 'admin@example.com' });
     if (!adminUser) {
       adminUser = await User.create({
@@ -23,9 +23,14 @@ const seedData = async () => {
         role: 'administrator'
       });
       console.log('Created admin user');
+    } else {
+      // Update password if user exists
+      adminUser.password = 'admin123';
+      await adminUser.save();
+      console.log('Updated admin user password');
     }
 
-    // Find or create test operator users
+    // Create or update test operator users
     let operator1 = await User.findOne({ email: 'operator1@example.com' });
     if (!operator1) {
       operator1 = await User.create({
@@ -35,6 +40,11 @@ const seedData = async () => {
         role: 'operator'
       });
       console.log('Created operator user 1');
+    } else {
+      // Update password if user exists
+      operator1.password = 'password123';
+      await operator1.save();
+      console.log('Updated operator 1 password');
     }
 
     let operator2 = await User.findOne({ email: 'operator2@example.com' });
@@ -46,6 +56,11 @@ const seedData = async () => {
         role: 'operator'
       });
       console.log('Created operator user 2');
+    } else {
+      // Update password if user exists
+      operator2.password = 'password123';
+      await operator2.save();
+      console.log('Updated operator 2 password');
     }
 
     // Clear existing data

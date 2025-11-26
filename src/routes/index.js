@@ -7,6 +7,7 @@ import { getMaterials } from "../controllers/materialController.js";
 import { getActivities, getActivitiesByType, createActivity, updateActivity, addCustomReason, getActivityDetailsOptions } from "../controllers/activityController.js";
 import { startOperation, stopOperation, getCurrentOperation, getOperations, getOperationById, updateOperation } from "../controllers/operationController.js";
 import { getAllActiveOperations, getAllOperations, getInactivityAlerts, getDashboardStats, getOperatorsStatus } from "../controllers/adminController.js";
+import { getDailyReport, exportToExcel, getPerformanceDashboard } from "../controllers/reportController.js";
 import { auth, adminAuth } from "../middleware/auth.js";
 
 const routes = Router();
@@ -51,6 +52,11 @@ routes.get("/admin/operations", adminAuth, getAllOperations);
 routes.get("/admin/operations/active", adminAuth, getAllActiveOperations);
 routes.get("/admin/alerts/inactivity", adminAuth, getInactivityAlerts);
 routes.get("/admin/operators/status", adminAuth, getOperatorsStatus);
+
+// Report endpoints (admin only)
+routes.get("/reports/daily", adminAuth, getDailyReport);
+routes.get("/reports/export/excel", adminAuth, exportToExcel);
+routes.get("/reports/performance", adminAuth, getPerformanceDashboard);
 
 // Test endpoints for mobile app integration
 routes.get("/hello", getHello);

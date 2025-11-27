@@ -34,18 +34,30 @@ export const getDailyReport = async (req, res) => {
     const activityTime = {};
     operations.forEach(op => {
       const activityName = op.activity?.name || 'Unknown';
-      const duration = op.endTime ? (new Date(op.endTime) - new Date(op.startTime)) / 1000 / 60 : 0;
+      const duration = op.endTime ? Math.max(0, (new Date(op.endTime) - new Date(op.startTime)) / 1000 / 60) : 0;
       activityTime[activityName] = (activityTime[activityName] || 0) + duration;
     });
 
-    // Material moved (count loading operations)
-    const materialMoved = {};
+    // Material moved with destination details
+    const materialMovedMap = {};
     operations
       .filter(op => op.material)
       .forEach(op => {
         const materialName = op.material?.name || 'Unknown';
-        materialMoved[materialName] = (materialMoved[materialName] || 0) + 1;
+        const destination = op.destination || 'Not specified';
+        const key = `${materialName}|${destination}`;
+
+        if (!materialMovedMap[key]) {
+          materialMovedMap[key] = {
+            name: materialName,
+            destination: destination,
+            count: 0
+          };
+        }
+        materialMovedMap[key].count += 1;
       });
+
+    const materialMoved = Object.values(materialMovedMap);
 
     // Calculate total distance
     const totalDistance = operations.reduce((sum, op) => sum + (op.distance || 0), 0);
@@ -158,8 +170,15 @@ export const getPerformanceDashboard = async (req, res) => {
     const filter = { endTime: { $ne: null } };
     if (startDate || endDate) {
       filter.startTime = {};
-      if (startDate) filter.startTime.$gte = new Date(startDate);
-      if (endDate) filter.startTime.$lte = new Date(endDate);
+      if (startDate) {
+        const start = new Date(startDate);
+        filter.startTime.$gte = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+      }
+      if (endDate) {
+        const end = new Date(endDate);
+        // Set to end of day
+        filter.startTime.$lt = new Date(end.getFullYear(), end.getMonth(), end.getDate() + 1);
+      }
     }
 
     const operations = await Operation.find(filter)
@@ -171,7 +190,7 @@ export const getPerformanceDashboard = async (req, res) => {
 
     operations.forEach(op => {
       const equipName = op.equipment?.name || 'Unknown';
-      const duration = (new Date(op.endTime) - new Date(op.startTime)) / 1000 / 60 / 60; // hours
+      const duration = Math.max(0, (new Date(op.endTime) - new Date(op.startTime)) / 1000 / 60 / 60); // hours, never negative
 
       tripsByEquipment[equipName] = (tripsByEquipment[equipName] || 0) + 1;
       timeByEquipment[equipName] = (timeByEquipment[equipName] || 0) + duration;
@@ -185,16 +204,15 @@ export const getPerformanceDashboard = async (req, res) => {
         operatorStats[operatorName] = { trips: 0, totalTime: 0 };
       }
       operatorStats[operatorName].trips += 1;
-      operatorStats[operatorName].totalTime += (new Date(op.endTime) - new Date(op.startTime)) / 1000 / 60;
+      operatorStats[operatorName].totalTime += Math.max(0, (new Date(op.endTime) - new Date(op.startTime)) / 1000 / 60);
     });
 
     // Calculate availability (total time / 24 hours per equipment)
     const availability = {};
     Object.entries(timeByEquipment).forEach(([equip, hours]) => {
-      const days = operations.length > 0 ?
-        (new Date(operations[0].startTime) - new Date(operations[operations.length - 1].startTime)) / 1000 / 60 / 60 / 24 || 1
-        : 1;
-      availability[equip] = ((hours / (days * 24)) * 100).toFixed(2);
+      // Simple availability: hours worked today as percentage of 24h
+      const availPercent = Math.min(100, (hours / 24) * 100);
+      availability[equip] = availPercent.toFixed(1);
     });
 
     res.json({

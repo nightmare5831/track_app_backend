@@ -38,13 +38,13 @@ export const getDailyReport = async (req, res) => {
       activityTime[activityName] = (activityTime[activityName] || 0) + duration;
     });
 
-    // Material moved with destination details
+    // Material moved with destination details (only transport activity type with destination)
     const materialMovedMap = {};
     operations
-      .filter(op => op.material)
+      .filter(op => op.material && op.destination && op.activity?.activityType === 'transport')
       .forEach(op => {
         const materialName = op.material?.name || 'Unknown';
-        const destination = op.destination || 'Not specified';
+        const destination = op.destination;
         const key = `${materialName}|${destination}`;
 
         if (!materialMovedMap[key]) {

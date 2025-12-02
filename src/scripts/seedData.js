@@ -9,25 +9,21 @@ dotenv.config();
 
 const seedData = async () => {
   try {
-    // Connect to MongoDB
     await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/trackapp');
     console.log('Connected to MongoDB');
 
-    // Create or update admin user
     let adminUser = await User.findOne({ email: 'admin@example.com' });
     if (!adminUser) {
       adminUser = await User.create({
         email: 'admin@example.com',
         password: 'admin123',
         name: 'Admin User',
-        role: 'administrator'
+        role: 'administrator',
+        authorizedEquipment: [] 
       });
       console.log('Created admin user');
     } else {
-      // Update password if user exists
-      adminUser.password = 'admin123';
-      await adminUser.save();
-      console.log('Updated admin user password');
+      console.log('Admin user already exists');
     }
 
     // Create or update test operator users
@@ -37,14 +33,12 @@ const seedData = async () => {
         email: 'operator1@example.com',
         password: 'password123',
         name: 'John Operator',
-        role: 'operator'
+        role: 'operator',
+        authorizedEquipment: []
       });
       console.log('Created operator user 1');
     } else {
-      // Update password if user exists
-      operator1.password = 'password123';
-      await operator1.save();
-      console.log('Updated operator 1 password');
+      console.log('Operator 1 already exists');
     }
 
     let operator2 = await User.findOne({ email: 'operator2@example.com' });
@@ -53,23 +47,19 @@ const seedData = async () => {
         email: 'operator2@example.com',
         password: 'password123',
         name: 'Jane Operator',
-        role: 'operator'
+        role: 'operator',
+        authorizedEquipment: []
       });
       console.log('Created operator user 2');
     } else {
-      // Update password if user exists
-      operator2.password = 'password123';
-      await operator2.save();
-      console.log('Updated operator 2 password');
+      console.log('Operator 2 already exists');
     }
 
-    // Clear existing data
     await Equipment.deleteMany({});
     await Material.deleteMany({});
     await Activity.deleteMany({});
     console.log('Cleared existing equipment, materials, and activities');
 
-    // Create Materials
     const materials = [
       {
         name: 'Activated Bentonite',
@@ -174,13 +164,38 @@ const seedData = async () => {
       }
     ];
 
-    // Insert equipment
-    await Equipment.insertMany([...excavators, ...trucks]);
+    const createdEquipment = await Equipment.insertMany([...excavators, ...trucks]);
     console.log(`Created ${excavators.length} excavators and ${trucks.length} trucks`);
 
-    // Create Activities (reference/lookup table)
+    const operator1Equipment = [
+      createdEquipment[0]._id, 
+      createdEquipment[1]._id, 
+      createdEquipment[3]._id, 
+      createdEquipment[4]._id  
+    ];
+
+    await User.updateOne(
+      { _id: operator1._id },
+      { $set: { authorizedEquipment: operator1Equipment } }
+    );
+    console.log(`Assigned ${operator1Equipment.length} equipment to operator1`);
+
+    const operator2Equipment = [
+      createdEquipment[0]._id, 
+      createdEquipment[2]._id, 
+      createdEquipment[5]._id, 
+      createdEquipment[6]._id, 
+      createdEquipment[7]._id 
+    ];
+
+    await User.updateOne(
+      { _id: operator2._id },
+      { $set: { authorizedEquipment: operator2Equipment } }
+    );
+    console.log(`Assigned ${operator2Equipment.length} equipment to operator2`);
+
+
     const activities = [
-      // General activities (available for all equipment)
       {
         name: 'Lunch',
         activityType: 'general',
@@ -314,14 +329,19 @@ const seedData = async () => {
     const createdActivities = await Activity.insertMany(activities);
     
     console.log('\n✅ Seed data created successfully!');
-    console.log('Users:');
-    console.log('  • Admin: admin@example.com / admin123');
-    console.log('  • Operator 1: operator1@example.com / password123');
-    console.log('  • Operator 2: operator2@example.com / password123');
+    console.log('\nUsers:');
+    console.log('  • Admin: admin@example.com / admin123 (all equipment access)');
+    console.log('  • Operator 1: operator1@example.com / password123 (4 equipment assigned)');
+    console.log('  • Operator 2: operator2@example.com / password123 (5 equipment assigned)');
+    console.log('\nEquipment:');
+    console.log('  • 3 Excavators (loading equipment)');
+    console.log('  • 5 Dump Trucks (transport equipment)');
     console.log('\nActivities:');
     console.log('  • 4 General activities (Lunch, Maintenance, Stopped, Waiting)');
     console.log('  • 2 Loading activities (Loading, Loading Truck)');
     console.log('  • 4 Transport activities (Load, Trip to Destination, Unload, Return)');
+    console.log('\nMaterials:');
+    console.log(`  • ${createdMaterials.length} materials created`);
 
   } catch (error) {
     console.error('Error seeding data:', error);

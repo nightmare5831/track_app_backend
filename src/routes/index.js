@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { healthCheck, getHello, postHello } from "../controllers/testController.js";
 import { register, login } from "../controllers/authController.js";
-import { getUsers, getUserById } from "../controllers/userController.js";
-import { getEquipment, getEquipmentById } from "../controllers/equipmentController.js";
+import { getUsers, getUserById, assignEquipment } from "../controllers/userController.js";
+import { getEquipment, getEquipmentById, getAllEquipment, createEquipment, updateEquipment, deleteEquipment } from "../controllers/equipmentController.js";
 import { getMaterials } from "../controllers/materialController.js";
-import { getActivities, getActivitiesByType, createActivity, updateActivity, addCustomReason, getActivityDetailsOptions } from "../controllers/activityController.js";
+import { getActivities, getActivitiesByType, createActivity, updateActivity, addCustomReason, getActivityDetailsOptions, deleteActivity, deleteCustomReason } from "../controllers/activityController.js";
 import { startOperation, stopOperation, getCurrentOperation, getOperations, getOperationById, updateOperation } from "../controllers/operationController.js";
 import { getAllActiveOperations, getAllOperations, getInactivityAlerts, getDashboardStats, getOperatorsStatus } from "../controllers/adminController.js";
 import { getDailyReport, exportToExcel, getPerformanceDashboard } from "../controllers/reportController.js";
@@ -22,10 +22,15 @@ routes.post("/auth/login", login);
 // User endpoints
 routes.get("/users", auth, getUsers);
 routes.get("/users/:id", auth, getUserById);
+routes.post("/users/assign-equipment", adminAuth, assignEquipment);
 
 // Equipment endpoints
 routes.get("/equipment", auth, getEquipment);
 routes.get("/equipment/:id", auth, getEquipmentById);
+routes.get("/admin/equipment", adminAuth, getAllEquipment);
+routes.post("/admin/equipment", adminAuth, createEquipment);
+routes.put("/admin/equipment/:id", adminAuth, updateEquipment);
+routes.delete("/admin/equipment/:id", adminAuth, deleteEquipment);
 
 // Material endpoints
 routes.get("/materials", auth, getMaterials);
@@ -34,9 +39,11 @@ routes.get("/materials", auth, getMaterials);
 routes.get("/activities", auth, getActivities);
 routes.get("/activities/type/:activityType", auth, getActivitiesByType);
 routes.get("/activities/:id/details", auth, getActivityDetailsOptions);
-routes.post("/activities", auth, createActivity);
-routes.put("/activities/:id", auth, updateActivity);
+routes.post("/activities", adminAuth, createActivity);
+routes.put("/activities/:id", adminAuth, updateActivity);
+routes.delete("/activities/:id", adminAuth, deleteActivity);
 routes.post("/activities/:id/custom-reason", auth, addCustomReason);
+routes.delete("/activities/:id/custom-reason", adminAuth, deleteCustomReason);
 
 // Operation endpoints (operational logs)
 routes.post("/operations/start", auth, startOperation);

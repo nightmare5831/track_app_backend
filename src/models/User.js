@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Team',
   },
+  authorizedEquipment: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Equipment'
+  }],
 }, {
   timestamps: true,
 });

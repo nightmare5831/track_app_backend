@@ -113,3 +113,46 @@ export const getActivityDetailsOptions = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// Delete activity (admin only)
+export const deleteActivity = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const activity = await Activity.findByIdAndDelete(id);
+
+    if (!activity) {
+      return res.status(404).json({ success: false, message: 'Activity not found' });
+    }
+
+    res.json({ success: true, message: 'Activity deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Delete custom reason (admin only)
+export const deleteCustomReason = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { customReason } = req.body;
+
+    if (!customReason) {
+      return res.status(400).json({ success: false, message: 'Custom reason is required' });
+    }
+
+    const activity = await Activity.findById(id);
+
+    if (!activity) {
+      return res.status(404).json({ success: false, message: 'Activity not found' });
+    }
+
+    activity.activityDetails.custom_reason = activity.activityDetails.custom_reason.filter(
+      reason => reason !== customReason
+    );
+    await activity.save();
+
+    res.json({ success: true, data: activity });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

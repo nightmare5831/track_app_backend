@@ -10,7 +10,15 @@ export const auth = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-    req.user = { id: decoded.userId };
+
+    // Fetch user to get role information
+    const user = await User.findById(decoded.userId);
+
+    if (!user) {
+      return res.status(401).json({ error: 'User not found' });
+    }
+
+    req.user = { id: decoded.userId, role: user.role };
     next();
   } catch (error) {
     res.status(401).json({ error: 'Invalid token' });

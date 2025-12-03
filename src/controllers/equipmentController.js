@@ -9,10 +9,17 @@ export const getEquipment = async (req, res) => {
       return res.json({ success: true, data: equipment });
     }
 
-    const user = await User.findById(req.user._id).populate('authorizedEquipment');
+    // For operators, fetch their authorized equipment
+    const user = await User.findById(req.user.id).populate('authorizedEquipment');
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
     const authorizedEquipment = user.authorizedEquipment.filter(e => e.status === 'active');
     res.json({ success: true, data: authorizedEquipment });
   } catch (error) {
+    console.error('Error fetching equipment:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 };

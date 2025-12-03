@@ -45,8 +45,6 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    console.log('Login attempt:', { email, passwordLength: password?.length });
-
     if (!email || !password) {
       return res.status(400).json({ success: false, error: 'Email and password are required' });
     }
@@ -59,8 +57,6 @@ export const login = async (req, res) => {
     }
 
     const isMatch = await user.comparePassword(password);
-    console.log('Password match:', isMatch);
-
     if (!isMatch) {
       return res.status(401).json({ success: false, error: 'Invalid credentials - Wrong password' });
     }

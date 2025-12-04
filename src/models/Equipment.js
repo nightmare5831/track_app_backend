@@ -18,6 +18,9 @@ const equipmentSchema = new mongoose.Schema({
     type: String,
     enum: ['active', 'inactive', 'maintenance'],
     default: 'active'
+  },
+  maintenanceType: {
+    type: String
   }
 }, { timestamps: true });
 
